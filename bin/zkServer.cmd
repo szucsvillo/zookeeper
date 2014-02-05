@@ -14,13 +14,32 @@ REM WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 REM See the License for the specific language governing permissions and
 REM limitations under the License.
 
-setlocal
+setlocal enabledelayedexpansion
 call "%~dp0zkEnv.cmd"
+
+if defined SERVER_JVMFLAGS (
+  set JVMFLAGS=%SERVER_JVMFLAGS% %JVMFLAGS%
+)
+
+if "%1" == "--service" (
+  set ZOO_LOG4J_PROP=INFO,ROLLINGFILE
+)
 
 set ZOOMAIN=org.apache.zookeeper.server.quorum.QuorumPeerMain
 set ZOO_LOG_FILE=zookeeper-%USERNAME%-server-%COMPUTERNAME%.log
+set ARGS="-Dzookeeper.log.dir=%ZOO_LOG_DIR%" "-Dzookeeper.root.logger=%ZOO_LOG4J_PROP%" "-Dzookeeper.log.file=%ZOO_LOG_FILE%" "-XX:+HeapDumpOnOutOfMemoryError" "-XX:OnOutOfMemoryError=cmd /c taskkill /pid %%%%p /t /f" -cp "%CLASSPATH%" %ZOOMAIN% "%ZOOCFG%" %*
 
 echo on
-call %JAVA% "-Dzookeeper.log.dir=%ZOO_LOG_DIR%" "-Dzookeeper.root.logger=%ZOO_LOG4J_PROP%" "-Dzookeeper.log.file=%ZOO_LOG_FILE%" "-XX:+HeapDumpOnOutOfMemoryError" "-XX:OnOutOfMemoryError=cmd /c taskkill /pid %%%%p /t /f" -cp "%CLASSPATH%" %ZOOMAIN% "%ZOOCFG%" %*
 
+if "%1" == "--service" (
+  @echo ^<service^>
+  @echo   ^<id^>zkServer^</id^>
+  @echo   ^<name^>zkServer^</name^>
+  @echo   ^<description^>This service runs Isotope zkServer^</description^>
+  @echo   ^<executable^>%JAVA%^</executable^>
+  @echo   ^<arguments^>%ARGS%^</arguments^>
+  @echo ^</service^>
+) else (
+  call %JAVA% %ARGS%
+)
 endlocal
