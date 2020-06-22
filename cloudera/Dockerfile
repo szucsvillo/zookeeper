@@ -45,6 +45,12 @@ RUN set -eux; \
     mv "$DISTRO_NAME/conf/"* "$ZOO_CONF_DIR"; \
     chown -R zookeeper:zookeeper "/$DISTRO_NAME"
 
+# jmx-exporter for prometheus metrics
+RUN mkdir /jmx-exporter && \
+    cd /jmx-exporter && \
+    wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.11.0/jmx_prometheus_javaagent-0.11.0.jar && \
+    cd -
+
 WORKDIR $DISTRO_NAME
 VOLUME ["$ZOO_DATA_DIR", "$ZOO_DATA_LOG_DIR", "$ZOO_LOG_DIR"]
 
