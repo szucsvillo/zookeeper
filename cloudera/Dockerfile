@@ -1,4 +1,4 @@
-FROM openjdk:11-jre-slim
+FROM openjdk:11.0.6-jre-slim-buster
 
 ENV ZOO_CONF_DIR=/conf \
     ZOO_DATA_DIR=/data \
