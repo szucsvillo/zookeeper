@@ -1,4 +1,4 @@
-FROM openjdk:11.0.6-jre-slim-buster
+FROM docker-private.infra.cloudera.com/cloudera_base/ubi8/openjdk-11-runtime:image_tag
 
 ENV ZOO_CONF_DIR=/conf \
     ZOO_DATA_DIR=/data \
@@ -15,7 +15,7 @@ ENV ZOO_CONF_DIR=/conf \
 
 ADD apache-zookeeper-* .
 
-
+USER root
 # Add a user with an explicit UID/GID and create necessary directories
 RUN set -eux; \
     groupadd -r zookeeper --gid=1000; \
@@ -25,24 +25,21 @@ RUN set -eux; \
 
 # Install required packges
 RUN set -eux; \
-    apt-get update; \
-    DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y --no-install-recommends \
+    microdnf update; \
+    microdnf install \
         ca-certificates \
         dirmngr \
-        gosu \
         gnupg \
-        netcat \
-        wget; \
-    rm -rf /var/lib/apt/lists/*; \
-# Verify that gosu binary works
-    gosu nobody true
+        hostname \
+        nc \
+        wget;
 
 ARG SHORT_DISTRO_NAME=zookeeper-__JAR_VERSION__
 ARG DISTRO_NAME=apache-zookeeper-__JAR_VERSION__-bin
 
 RUN set -eux; \
     mv "$DISTRO_NAME/conf/"* "$ZOO_CONF_DIR"; \
+    mv "$DISTRO_NAME" "/$DISTRO_NAME"; \
     chown -R zookeeper:zookeeper "/$DISTRO_NAME"
 
 # jmx-exporter for prometheus metrics
@@ -51,7 +48,7 @@ RUN mkdir /jmx-exporter && \
     wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.11.0/jmx_prometheus_javaagent-0.11.0.jar && \
     cd -
 
-WORKDIR $DISTRO_NAME
+WORKDIR /$DISTRO_NAME
 VOLUME ["$ZOO_DATA_DIR", "$ZOO_DATA_LOG_DIR", "$ZOO_LOG_DIR"]
 
 EXPOSE 2181 2888 3888 8080
@@ -60,5 +57,6 @@ ENV PATH=$PATH:/$DISTRO_NAME/bin \
     ZOOCFGDIR=$ZOO_CONF_DIR
 
 COPY docker-entrypoint.sh /
+USER zookeeper
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["zkServer.sh", "start-foreground"]
