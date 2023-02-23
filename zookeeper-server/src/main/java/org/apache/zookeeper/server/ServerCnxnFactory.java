@@ -155,6 +155,8 @@ public abstract class ServerCnxnFactory {
         }
     }
 
+    public abstract void closeAll();
+
     public abstract void closeAll(ServerCnxn.DisconnectReason reason);
 
     public static ServerCnxnFactory createFactory() throws IOException {
