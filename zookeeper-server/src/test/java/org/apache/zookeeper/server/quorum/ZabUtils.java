@@ -119,9 +119,6 @@ public class ZabUtils {
             return false;
         }
         @Override
-        public void closeAll() {
-        }
-        @Override
         public void closeAll(ServerCnxn.DisconnectReason reason) {
         }
         @Override

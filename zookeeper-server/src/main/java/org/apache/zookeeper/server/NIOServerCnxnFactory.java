@@ -831,11 +831,6 @@ public class NIOServerCnxnFactory extends ServerCnxnFactory {
         return s.size();
     }
 
-    @Override
-    public void closeAll() {
-        closeAll(ServerCnxn.DisconnectReason.CLOSE_CONNECTION_COMMAND);
-    }
-
     /**
      * clear all the connections in the selector
      *

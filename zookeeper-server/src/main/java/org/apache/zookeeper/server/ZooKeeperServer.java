@@ -412,16 +412,6 @@ public class ZooKeeperServer implements SessionExpirer, ServerStats.Provider {
      * @param tickTime the ticktime for the server
      * @throws IOException
      */
-    public ZooKeeperServer(FileTxnSnapLog txnLogFactory, int tickTime) {
-        this(txnLogFactory, tickTime, "");
-    }
-
-    /**
-     * creates a zookeeperserver instance.
-     * @param txnLogFactory the file transaction snapshot logging class
-     * @param tickTime the ticktime for the server
-     * @throws IOException
-     */
     public ZooKeeperServer(FileTxnSnapLog txnLogFactory, int tickTime, String initialConfig) {
         this(txnLogFactory, tickTime, -1, -1, -1, new ZKDatabase(txnLogFactory), initialConfig, QuorumPeerConfig.isReconfigEnabled());
     }
