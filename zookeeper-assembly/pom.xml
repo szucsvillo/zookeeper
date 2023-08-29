@@ -160,6 +160,7 @@
               <appendAssemblyId>false</appendAssemblyId>
               <tarLongFileMode>posix</tarLongFileMode>
               <skipAssembly>${skip.lib.artifact}</skipAssembly>
+	      <attach>false</attach>
             </configuration>
           </execution>
         </executions>
