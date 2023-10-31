@@ -560,7 +560,6 @@
     <netty.version>4.1.100.Final</netty.version>
     <jetty.version>9.4.53.v20231009</jetty.version>
     <jackson.version>2.13.2.1</jackson.version>
-    <jackson-databind.version>2.13.2.1</jackson-databind.version>
     <jline.version>2.14.6</jline.version>
     <snappy.version>1.1.10.5</snappy.version>
     <kerby.version>2.0.3</kerby.version>
@@ -747,7 +746,7 @@
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>${jackson-databind.version}</version>
+        <version>${jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>jline</groupId>
